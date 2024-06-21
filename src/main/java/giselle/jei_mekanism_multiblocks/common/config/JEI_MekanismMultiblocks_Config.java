@@ -14,7 +14,7 @@ public class JEI_MekanismMultiblocks_Config
 
 	public static void registerConfigs(ModLoadingContext modLoadingContext)
 	{
-		modLoadingContext.registerConfig(ModConfig.Type.CLIENT, CLIENT.getConfigSpec());
+		modLoadingContext.getActiveContainer().registerConfig(ModConfig.Type.CLIENT, CLIENT.getConfigSpec());
 	}
 
 }

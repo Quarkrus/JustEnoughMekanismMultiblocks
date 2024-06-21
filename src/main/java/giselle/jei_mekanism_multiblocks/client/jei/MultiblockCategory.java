@@ -99,7 +99,7 @@ public abstract class MultiblockCategory<WIDGET extends MultiblockWidget> implem
 	public void draw(WIDGET widget, IRecipeSlotsView recipeSlotsView, GuiGraphics pGuiGraphics, double mouseX, double mouseY)
 	{
 		Minecraft minecraft = Minecraft.getInstance();
-		float partialTicks = minecraft.getDeltaFrameTime();
+		float partialTicks = minecraft.getTimer().getRealtimeDeltaTicks();
 		widget.render(pGuiGraphics, (int) mouseX, (int) mouseY, partialTicks);
 	}
 
