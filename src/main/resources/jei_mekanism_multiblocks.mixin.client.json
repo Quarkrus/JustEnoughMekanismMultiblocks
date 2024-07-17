@@ -6,6 +6,7 @@
 	"client": [
 		"minecraft.TooltipMixin",
 		"jei.RecipeGuiLayoutsAccessor",
+		"jei.RecipeGuiLogicAccessor",
 		"jei.RecipesGuiMixin"
 	],
 	"mixins": [],
