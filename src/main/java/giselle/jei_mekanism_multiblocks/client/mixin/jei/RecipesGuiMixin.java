@@ -24,9 +24,13 @@ public abstract class RecipesGuiMixin implements IRecipeLayoutHolder, IRecipeLog
 	{
 		List<IRecipeLayoutDrawable<?>> list = new ArrayList<>();
 
-		for (RecipeLayoutWithButtons<?> recipeLayoutWithButtons : ((RecipeGuiLayoutsAccessor) this.layouts).getRecipeLayoutsWithButtons())
+		if (this.layouts instanceof RecipeGuiLayoutsAccessor accessor)
 		{
-			list.add(recipeLayoutWithButtons.getRecipeLayout());
+			for (RecipeLayoutWithButtons<?> recipeLayoutWithButtons : accessor.getRecipeLayoutsWithButtons())
+			{
+				list.add(recipeLayoutWithButtons.getRecipeLayout());
+			}
+
 		}
 
 		return list;
