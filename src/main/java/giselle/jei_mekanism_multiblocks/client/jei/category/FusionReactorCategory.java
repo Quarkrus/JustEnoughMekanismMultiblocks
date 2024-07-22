@@ -248,8 +248,8 @@ public class FusionReactorCategory extends MultiblockCategory<FusionReactorCateg
 			}
 
 			double fusionThermocoupleEfficiency = MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get();
-			long passiveGeneration = MathUtils.clampToLong(fusionThermocoupleEfficiency * casingThermalConductivity * casingTemp);
-			consumer.accept(new ResultWidget(Component.translatable("text.jei_mekanism_multiblocks.result.passive_generation"), EnergyDisplay.of(passiveGeneration).getTextComponent()));
+			double passiveGeneration = fusionThermocoupleEfficiency * casingThermalConductivity * casingTemp;
+			consumer.accept(new ResultWidget(Component.translatable("text.jei_mekanism_multiblocks.result.passive_generation"), EnergyDisplay.of(MathUtils.clampToLong(passiveGeneration)).getTextComponent()));
 
 			if (steamProduction > 0L)
 			{
