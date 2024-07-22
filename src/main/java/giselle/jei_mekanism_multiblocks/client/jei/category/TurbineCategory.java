@@ -11,10 +11,11 @@ import giselle.jei_mekanism_multiblocks.client.jei.MultiblockCategory;
 import giselle.jei_mekanism_multiblocks.client.jei.MultiblockWidget;
 import giselle.jei_mekanism_multiblocks.client.jei.ResultWidget;
 import giselle.jei_mekanism_multiblocks.common.util.VolumeTextHelper;
-import mekanism.api.math.FloatingLong;
 import mekanism.api.math.MathUtils;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.UnitDisplayUtils;
+import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.MekanismGenerators;
@@ -281,16 +282,17 @@ public class TurbineCategory extends MultiblockCategory<TurbineCategory.TurbineW
 			int blades = this.getBladeCount(rotors);
 			int vents = this.getVentCount();
 
-			FloatingLong maxProduction = this.getMaxProduction(lowerVolume, blades, vents);
+			double maxProduction = this.getMaxProduction(lowerVolume, blades, vents);
 			int maxFlow = MathUtils.clampToInt(this.getMaxFlowRateClamped(lowerVolume, vents));
 			long maxWaterOutput = getMaxWaterOutput();
 			long steamTank = this.getSteamTank(lowerVolume);
-			FloatingLong energyCapacity = this.getEnergyCapacity(volume);
+			long energyCapacity = this.getEnergyCapacity(volume);
 
-			FloatingLong productionPerFlow = maxProduction.divide(maxFlow);
-			Component productionPerFlowTooltip = Component.translatable("text.jei_mekanism_multiblocks.tooltip.production_per_flow", Component.translatable("%1$s/%2$s", EnergyDisplay.of(productionPerFlow).getTextComponent(), "mB"));
+			double productionPerFlow = maxProduction / maxFlow;
+			EnergyUnit configured = EnergyUnit.getConfigured();
+			Component productionPerFlowTooltip = Component.translatable("text.jei_mekanism_multiblocks.tooltip.production_per_flow", Component.translatable("%1$s/%2$s", UnitDisplayUtils.getDisplayShort(productionPerFlow / configured.getConversion(), configured), "mB"));
 
-			ResultWidget maxProductionWidget = new ResultWidget(Component.translatable("text.jei_mekanism_multiblocks.result.max_production"), Component.translatable("%s/t", EnergyDisplay.of(maxProduction).getTextComponent()));
+			ResultWidget maxProductionWidget = new ResultWidget(Component.translatable("text.jei_mekanism_multiblocks.result.max_production"), Component.translatable("%s/t", EnergyDisplay.of((long) maxProduction).getTextComponent()));
 			maxProductionWidget.setJeiTooltip(productionPerFlowTooltip);
 
 			consumer.accept(maxProductionWidget);
@@ -334,9 +336,9 @@ public class TurbineCategory extends MultiblockCategory<TurbineCategory.TurbineW
 			return lowerVolume * MekanismGeneratorsConfig.generators.turbineGasPerTank.get();
 		}
 
-		public FloatingLong getEnergyCapacity(int volume)
+		public long getEnergyCapacity(int volume)
 		{
-			return MekanismGeneratorsConfig.generators.turbineEnergyCapacityPerVolume.get().multiply(volume);
+			return MathUtils.multiplyClamped(MekanismGeneratorsConfig.generators.turbineEnergyCapacityPerVolume.get(), volume);
 		}
 
 		public int getClampedMaxVentCount(int rotorCount)
@@ -410,19 +412,21 @@ public class TurbineCategory extends MultiblockCategory<TurbineCategory.TurbineW
 			return (long) this.getCondenserCount() * MekanismGeneratorsConfig.generators.condenserRate.get();
 		}
 
-		public FloatingLong getMaxProduction(int lowerVolume, int blades, int vents)
+		public double getMaxProduction(int lowerVolume, int blades, int vents)
 		{
 			double flowRate = this.getMaxFlowRateClamped(lowerVolume, vents);
 
 			if (flowRate > 0.0D)
 			{
 				int coils = this.getNeededCoilCount(lowerVolume);
-				FloatingLong energyMultiplier = MekanismConfig.general.maxEnergyPerSteam.get().divide(TurbineValidator.MAX_BLADES).multiply(Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-				return energyMultiplier.multiply(flowRate);
+				double steamPerBlade = MekanismConfig.general.maxEnergyPerSteam.get() / (double) TurbineValidator.MAX_BLADES;
+				int bladesSupported = coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get();
+				int generationLimiter = Math.min(blades, bladesSupported);
+				return steamPerBlade * (flowRate * generationLimiter);
 			}
 			else
 			{
-				return FloatingLong.ZERO;
+				return 0.0D;
 			}
 
 		}

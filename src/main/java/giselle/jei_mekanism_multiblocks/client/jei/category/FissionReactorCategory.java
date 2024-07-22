@@ -245,7 +245,7 @@ public class FissionReactorCategory extends MultiblockCategory<FissionReactorCat
 		{
 			long coolantCapacity = this.getCooledCoolantCapacity();
 			long toBurn = this.getFissionFuelAssemblyCount() * MekanismGeneratorsConfig.generators.burnPerAssembly.get();
-			double burnHeat = toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get().doubleValue();
+			long burnHeat = MathUtils.multiplyClamped(toBurn, MekanismGeneratorsConfig.generators.energyPerFissionFuel.get());
 			double heatCapacity = this.getHeatCapacity();
 			double boilEfficiency = 1.0D;
 
@@ -319,7 +319,7 @@ public class FissionReactorCategory extends MultiblockCategory<FissionReactorCat
 		public double getCoolingStableTemp(long toBurn, double coolantConductivity, double thermalEnthalpy)
 		{
 			long coolantCapacity = this.getCooledCoolantCapacity();
-			double burnHeat = toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get().doubleValue();
+			long burnHeat = MathUtils.multiplyClamped(toBurn, MekanismGeneratorsConfig.generators.energyPerFissionFuel.get());
 			double heatCapacity = this.getHeatCapacity();
 			double boilEfficiency = 1.0D;
 

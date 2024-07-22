@@ -13,7 +13,7 @@ import giselle.jei_mekanism_multiblocks.client.jei.ResultWidget;
 import giselle.jei_mekanism_multiblocks.common.util.VolumeTextHelper;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.gas.Gas;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.text.EnergyDisplay;
@@ -229,15 +229,15 @@ public class FusionReactorCategory extends MultiblockCategory<FusionReactorCateg
 			long steamTank = MekanismGeneratorsConfig.generators.fusionSteamPerInjection.get() * limitedInjectionRate;
 			long fuelTank = MekanismGeneratorsConfig.generators.fusionFuelCapacity.get();
 
-			FloatingLong energyFusionFuel = MekanismGeneratorsConfig.generators.energyPerFusionFuel.get();
+			long energyFusionFuel = MekanismGeneratorsConfig.generators.energyPerFusionFuel.get();
 			double casingThermalConductivity = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get();
-			double casingTemp = energyFusionFuel.multiply(injectionRate).divide(casingThermalConductivity).doubleValue();
+			double casingTemp = MathUtils.multiplyClamped(energyFusionFuel, injectionRate) / casingThermalConductivity;
 			long steamProduction = 0L;
 
 			if (this.isWaterCooled())
 			{
 				double waterHeatingRatio = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get();
-				double wateredCasingTemp = energyFusionFuel.multiply(injectionRate).divide(casingThermalConductivity + waterHeatingRatio).doubleValue();
+				double wateredCasingTemp = MathUtils.multiplyClamped(energyFusionFuel, injectionRate) / (casingThermalConductivity + waterHeatingRatio);
 				double waterHeat = waterHeatingRatio * wateredCasingTemp;
 				steamProduction = (long) (HeatUtils.getSteamEnergyEfficiency() * waterHeat / HeatUtils.getWaterThermalEnthalpy());
 				steamProduction = Math.min(steamProduction, waterTank);
@@ -248,7 +248,7 @@ public class FusionReactorCategory extends MultiblockCategory<FusionReactorCateg
 			}
 
 			double fusionThermocoupleEfficiency = MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get();
-			FloatingLong passiveGeneration = FloatingLong.create(fusionThermocoupleEfficiency * casingThermalConductivity * casingTemp);
+			long passiveGeneration = MathUtils.clampToLong(fusionThermocoupleEfficiency * casingThermalConductivity * casingTemp);
 			consumer.accept(new ResultWidget(Component.translatable("text.jei_mekanism_multiblocks.result.passive_generation"), EnergyDisplay.of(passiveGeneration).getTextComponent()));
 
 			if (steamProduction > 0L)

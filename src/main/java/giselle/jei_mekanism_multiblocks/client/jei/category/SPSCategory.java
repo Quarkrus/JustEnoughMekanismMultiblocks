@@ -8,7 +8,7 @@ import giselle.jei_mekanism_multiblocks.client.jei.MultiblockCategory;
 import giselle.jei_mekanism_multiblocks.client.jei.MultiblockWidget;
 import giselle.jei_mekanism_multiblocks.client.jei.ResultWidget;
 import giselle.jei_mekanism_multiblocks.common.util.VolumeTextHelper;
-import mekanism.api.math.FloatingLong;
+import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
@@ -92,7 +92,7 @@ public class SPSCategory extends MultiblockCategory<SPSCategory.SPSWidget>
 		{
 			super.collectResult(consumer);
 
-			FloatingLong energyPerAntimatter = MekanismConfig.general.spsEnergyPerInput.get().multiply(MekanismConfig.general.spsInputPerAntimatter.get());
+			long energyPerAntimatter = MathUtils.multiplyClamped(MekanismConfig.general.spsEnergyPerInput.get(), MekanismConfig.general.spsInputPerAntimatter.get());
 			consumer.accept(new ResultWidget(Component.translatable("text.jei_mekanism_multiblocks.result.energy_per_antimatter"), Component.translatable("%s/%s", EnergyDisplay.of(energyPerAntimatter).getTextComponent(), "mB")));
 			consumer.accept(new ResultWidget(Component.translatable("text.jei_mekanism_multiblocks.result.input_tank"), VolumeTextHelper.formatMB(MekanismConfig.general.spsInputPerAntimatter.get() * 2L)));
 			consumer.accept(new ResultWidget(Component.translatable("text.jei_mekanism_multiblocks.result.output_tank"), VolumeTextHelper.formatMB(MekanismConfig.general.spsOutputTankCapacity.get())));
