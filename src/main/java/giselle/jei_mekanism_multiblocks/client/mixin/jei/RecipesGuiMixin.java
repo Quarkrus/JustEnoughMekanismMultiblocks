@@ -44,9 +44,9 @@ public abstract class RecipesGuiMixin implements IRecipeLayoutHolder, IRecipeLog
 
 			return list;
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
-			JEI_MekanismMultiblocks.LOGGER.error(e);
+			JEI_MekanismMultiblocks.LOGGER.error("", e);
 			return Collections.emptyList();
 		}
 
@@ -64,9 +64,9 @@ public abstract class RecipesGuiMixin implements IRecipeLayoutHolder, IRecipeLog
 			}
 
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
-			JEI_MekanismMultiblocks.LOGGER.error(e);
+			JEI_MekanismMultiblocks.LOGGER.error("", e);
 		}
 
 	}
