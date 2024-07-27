@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 import giselle.jei_mekanism_multiblocks.client.IRecipeLayoutHolder;
 import giselle.jei_mekanism_multiblocks.client.IRecipeLogicStateListener;
@@ -26,47 +27,62 @@ public abstract class RecipesGuiMixin implements IRecipeLayoutHolder, IRecipeLog
 	@Shadow
 	private RecipeGuiLayouts layouts;
 
+	@Unique
+	private boolean jei_mekanism_multiblocks$getRecipeLayoutsWasCaught;
+	@Unique
+	private boolean jei_mekanism_multiblocks$onStateChangeWasCaught;
+
 	@Override
 	public List<IRecipeLayoutDrawable<?>> jei_mekanism_multiblocks$getRecipeLayouts()
 	{
-		try
+		if (!this.jei_mekanism_multiblocks$getRecipeLayoutsWasCaught)
 		{
-			List<IRecipeLayoutDrawable<?>> list = new ArrayList<>();
-
-			if (this.layouts instanceof RecipeGuiLayoutsAccessor accessor)
+			try
 			{
-				for (RecipeLayoutWithButtons<?> recipeLayoutWithButtons : accessor.getRecipeLayoutsWithButtons())
+				List<IRecipeLayoutDrawable<?>> list = new ArrayList<>();
+
+				if (this.layouts instanceof RecipeGuiLayoutsAccessor accessor)
 				{
-					list.add(recipeLayoutWithButtons.recipeLayout());
+					for (RecipeLayoutWithButtons<?> recipeLayoutWithButtons : accessor.getRecipeLayoutsWithButtons())
+					{
+						list.add(recipeLayoutWithButtons.recipeLayout());
+					}
+
 				}
 
+				return list;
+			}
+			catch (Throwable e)
+			{
+				this.jei_mekanism_multiblocks$getRecipeLayoutsWasCaught = true;
+				JEI_MekanismMultiblocks.LOGGER.error("", e);
 			}
 
-			return list;
-		}
-		catch (Throwable e)
-		{
-			JEI_MekanismMultiblocks.LOGGER.error("", e);
-			return Collections.emptyList();
 		}
 
+		return Collections.emptyList();
 	}
 
 	@Override
 	public void jei_mekanism_multiblocks$onStateChange()
 	{
-		try
+		if (!jei_mekanism_multiblocks$onStateChangeWasCaught)
 		{
-			if (this.logic instanceof RecipeGuiLogicAccessor accessor)
+			try
 			{
-				ILookupState state = accessor.getState();
-				accessor.invokeSetState(state, false);
+				if (this.logic instanceof RecipeGuiLogicAccessor accessor)
+				{
+					ILookupState state = accessor.getState();
+					accessor.invokeSetState(state, false);
+				}
+
+			}
+			catch (Throwable e)
+			{
+				this.jei_mekanism_multiblocks$onStateChangeWasCaught = true;
+				JEI_MekanismMultiblocks.LOGGER.error("", e);
 			}
 
-		}
-		catch (Throwable e)
-		{
-			JEI_MekanismMultiblocks.LOGGER.error("", e);
 		}
 
 	}
