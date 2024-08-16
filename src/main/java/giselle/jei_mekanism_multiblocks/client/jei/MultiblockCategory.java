@@ -5,14 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.InputConstants.Key;
-
 import giselle.jei_mekanism_multiblocks.common.JEI_MekanismMultiblocks;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.gui.widgets.IRecipeExtrasBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -21,6 +20,7 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -104,7 +104,7 @@ public abstract class MultiblockCategory<WIDGET extends MultiblockWidget> implem
 	}
 
 	@Override
-	public List<Component> getTooltipStrings(WIDGET widget, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY)
+	public void getTooltip(ITooltipBuilder tooltip, WIDGET widget, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY)
 	{
 		if (widget.costsButton.isSelected())
 		{
@@ -113,42 +113,19 @@ public abstract class MultiblockCategory<WIDGET extends MultiblockWidget> implem
 			if (cost != null)
 			{
 				Minecraft minecraft = Minecraft.getInstance();
-				List<Component> tooltip = new ArrayList<>();
 				tooltip.addAll(Arrays.asList(cost.getHeadTooltip()));
 				tooltip.addAll(Screen.getTooltipFromItem(minecraft, cost.getItemStack()));
 				tooltip.addAll(Arrays.asList(cost.getTailTooltip()));
-				return tooltip;
 			}
 
 		}
 
-		return IRecipeCategory.super.getTooltipStrings(widget, recipeSlotsView, mouseX, mouseY);
 	}
 
 	@Override
-	public boolean handleInput(WIDGET widget, double mouseX, double mouseY, Key input)
+	public void createRecipeExtras(IRecipeExtrasBuilder builder, WIDGET widget, IFocusGroup focuses)
 	{
-		if (input.getType() == InputConstants.Type.MOUSE)
-		{
-			return widget.mouseClicked(mouseX, mouseY, input.getValue());
-		}
-
-		return IRecipeCategory.super.handleInput(widget, mouseX, mouseY, input);
-	}
-
-	public boolean handleScroll(WIDGET widget, double mouseX, double mouseY, double delta)
-	{
-		return widget.mouseScrolled(mouseX, mouseY, delta);
-	}
-
-	public boolean handleDrag(WIDGET widget, double mouseX, double mouseY, int mouseButton, double dragX, double dragY)
-	{
-		return widget.mouseDragged(mouseX, mouseY, mouseButton, dragX, dragY);
-	}
-
-	public boolean handleReleased(WIDGET widget, double mouseX, double mouseY, int mouseButton)
-	{
-		return widget.mouseReleased(mouseX, mouseY, mouseButton);
+		builder.addGuiEventListener(new WidgetInputHandler(widget, new ScreenRectangle(0, 0, widget.getWidth(), widget.getHeight())));
 	}
 
 	@Override
