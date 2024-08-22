@@ -12,7 +12,7 @@ import giselle.jei_mekanism_multiblocks.client.jei.MultiblockWidget;
 import giselle.jei_mekanism_multiblocks.client.jei.ResultWidget;
 import giselle.jei_mekanism_multiblocks.common.util.VolumeTextHelper;
 import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.gas.Gas;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.math.MathUtils;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.HeatUtils;
@@ -51,11 +51,11 @@ public class FusionReactorCategory extends MultiblockCategory<FusionReactorCateg
 		consumer.accept(GeneratorsBlocks.LASER_FOCUS_MATRIX.getItemStack());
 		consumer.accept(GeneratorsBlocks.REACTOR_GLASS.getItemStack());
 
-		List<Gas> fusionFuelGases = MekanismAPI.GAS_REGISTRY.getTag(GeneratorTags.Gases.FUSION_FUEL).stream().flatMap(Named<Gas>::stream).map(Holder<Gas>::value).toList();
+		List<Chemical> fusionFuelChemicals = MekanismAPI.CHEMICAL_REGISTRY.getTag(GeneratorTags.Chemicals.FUSION_FUEL).stream().flatMap(Named<Chemical>::stream).map(Holder<Chemical>::value).toList();
 
-		for (Gas gas : fusionFuelGases)
+		for (Chemical chemical : fusionFuelChemicals)
 		{
-			consumer.accept(ChemicalUtil.getFilledVariant(GeneratorsItems.HOHLRAUM.getItemStack(), gas));
+			consumer.accept(ChemicalUtil.getFilledVariant(GeneratorsItems.HOHLRAUM.getItemStack(), chemical));
 		}
 
 	}

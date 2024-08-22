@@ -18,8 +18,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.registries.MekanismGases;
-import mekanism.common.registries.MekanismGases.Coolants;
+import mekanism.common.registries.MekanismChemicals;
+import mekanism.common.registries.MekanismChemicals.Coolants;
 import mekanism.common.util.HeatUtils;
 import mezz.jei.api.helpers.IGuiHelper;
 import net.minecraft.ChatFormatting;
@@ -264,7 +264,8 @@ public class BoilerCategory extends MultiblockCategory<BoilerCategory.BoilerWidg
 				// System.out.println("needMoreSuperHeatingElemetns: " + simulation.needMoreSuperHeatingElemetns);
 
 				ResultWidget boilRateWidget = new ResultWidget(Component.translatable("text.jei_mekanism_multiblocks.result.boil_rate_with", new FluidStack(Fluids.WATER, 1).getHoverName()), VolumeTextHelper.formatMBt(simulation.boilRate));
-				ResultWidget coolingRateWidget = new ResultWidget(Component.translatable("text.jei_mekanism_multiblocks.result.cooling_rate_with", MekanismGases.SODIUM.getTextComponent()), VolumeTextHelper.formatMBt(simulation.coolingRate));
+				ResultWidget coolingRateWidget = new ResultWidget(Component.translatable("text.jei_mekanism_multiblocks.result.cooling_rate_with", MekanismChemicals.SODIUM.getTextComponent()), VolumeTextHelper.formatMBt(simulation.coolingRate));
+
 				this.needMoreHeatingElements = false;
 
 				if (simulation.needMoreSuperHeatingElements)
