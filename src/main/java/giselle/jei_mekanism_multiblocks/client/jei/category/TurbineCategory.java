@@ -333,7 +333,7 @@ public class TurbineCategory extends MultiblockCategory<TurbineCategory.TurbineW
 
 		public long getSteamTank(int lowerVolume)
 		{
-			return lowerVolume * MekanismGeneratorsConfig.generators.turbineGasPerTank.get();
+			return lowerVolume * MekanismGeneratorsConfig.generators.turbineChemicalPerTank.get();
 		}
 
 		public long getEnergyCapacity(int volume)
@@ -388,7 +388,7 @@ public class TurbineCategory extends MultiblockCategory<TurbineCategory.TurbineW
 		public int getNeededVentCountUnclamped(int lowerVolume)
 		{
 			double flowRate = this.getMaxFlowRateUnclamped(lowerVolume);
-			return Mth.ceil(flowRate / MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
+			return Mth.ceil(flowRate / MekanismGeneratorsConfig.generators.turbineVentChemicalFlow.get());
 		}
 
 		public int getNeededCoilCount(int bladeCount)
@@ -398,13 +398,13 @@ public class TurbineCategory extends MultiblockCategory<TurbineCategory.TurbineW
 
 		public double getMaxFlowRateUnclamped(int lowerVolume)
 		{
-			return lowerVolume * this.getDisperserCount() * MekanismGeneratorsConfig.generators.turbineDisperserGasFlow.get();
+			return lowerVolume * this.getDisperserCount() * MekanismGeneratorsConfig.generators.turbineDisperserChemicalFlow.get();
 		}
 
 		public double getMaxFlowRateClamped(int lowerVolume, int vents)
 		{
 			double unclamped = this.getMaxFlowRateUnclamped(lowerVolume);
-			return Math.min(unclamped, vents * MekanismGeneratorsConfig.generators.turbineVentGasFlow.get());
+			return Math.min(unclamped, vents * MekanismGeneratorsConfig.generators.turbineVentChemicalFlow.get());
 		}
 
 		public long getMaxWaterOutput()
