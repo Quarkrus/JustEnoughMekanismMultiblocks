@@ -107,10 +107,15 @@ public abstract class MultiblockCategory<WIDGET extends MultiblockWidget> implem
 	{
 		if (input.getType() == InputConstants.Type.MOUSE)
 		{
-			return widget.mouseClicked(mouseX, mouseY, input.getValue());
+			// return widget.mouseClicked(mouseX, mouseY, input.getValue());
 		}
 
 		return IRecipeCategory.super.handleInput(widget, mouseX, mouseY, input);
+	}
+
+	public boolean handleMousePress(MultiblockWidget widget, double mouseX, double mouseY, int button)
+	{
+		return widget.mouseClicked(mouseX, mouseY, button);
 	}
 
 	public boolean handleScroll(WIDGET widget, double mouseX, double mouseY, double delta)

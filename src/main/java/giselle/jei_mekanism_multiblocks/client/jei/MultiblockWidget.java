@@ -349,5 +349,4 @@ public abstract class MultiblockWidget extends ContainerWidget
 	public abstract int getDimensionHeightMin();
 
 	public abstract int getDimensionHeightMax();
-
 }

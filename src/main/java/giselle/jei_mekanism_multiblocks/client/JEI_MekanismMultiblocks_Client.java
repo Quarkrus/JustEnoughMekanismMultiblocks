@@ -28,6 +28,16 @@ public class JEI_MekanismMultiblocks_Client
 	}
 
 	@SubscribeEvent
+	public static void onMousePress(ScreenEvent.MouseButtonPressed.Pre e)
+	{
+		foreachMouseInput(e, e.getMouseX(), e.getMouseY(), (category, widget, mouseX, mouseY) ->
+		{
+			category.handleMousePress(widget, mouseX, mouseY, e.getButton());
+		});
+
+	}
+
+	@SubscribeEvent
 	public static void onMouseScroll(ScreenEvent.MouseScrolled.Pre e)
 	{
 		foreachMouseInput(e, e.getMouseX(), e.getMouseY(), (category, widget, mouseX, mouseY) ->
